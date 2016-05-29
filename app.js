@@ -17,7 +17,7 @@ app.controller('MainCtrl', function($scope) {
     // Add jQuery, if requested (also adds IIFE wrapper).
     if ($scope.options.jQuery) {
       $scope.bookmarklet =
-        'void function ($) {' +
+        'javascript:void function ($) {' +
         '  var loadBookmarklet = function ($) {' + currentValue + '};' +
         '  var hasJQuery = $ && $.fn;' +
         '  if(hasJQuery) {' +

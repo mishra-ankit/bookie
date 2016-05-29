@@ -1,0 +1,13 @@
+/* Put your css in here */
+
+textarea {
+    width: 90%;
+    /* height: 15em;
+    font-family: monospace; */
+}
+
+
+ #editor {
+     
+      height: 250px;
+    }

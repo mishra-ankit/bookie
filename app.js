@@ -9,7 +9,7 @@ app.controller('MainCtrl', function($scope) {
   $scope.options = {};
   $scope.options.jQuery = false;
   // code = 'void function () {' + code + '}();';
-  var jQueryURL = "http://code.jquery.com/jquery-latest.min.js";
+  var jQueryURL = "https://code.jquery.com/jquery-latest.min.js";
   $scope.aceChanged = function(_editor) {
     // Get Current Value
     var currentValue = ace.edit("editor").getValue();

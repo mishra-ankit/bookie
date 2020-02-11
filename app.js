@@ -17,7 +17,7 @@ app.controller('MainCtrl', function($scope) {
     // Add jQuery, if requested (also adds IIFE wrapper).
     if ($scope.options.jQuery) {
       $scope.bookmarklet =
-        'javascript:void function ($) {' +
+        'javascript:(function($){' +
         '  var loadBookmarklet = function ($) {' + currentValue + '};' +
         '  var hasJQuery = $ && $.fn;' +
         '  if(hasJQuery) {' +
@@ -33,9 +33,9 @@ app.controller('MainCtrl', function($scope) {
         '    };' +
         '  }' +
         '  document.getElementsByTagName("head")[0].appendChild(s);' +
-        '}(window.jQuery);';
+        '})(window.jQuery)';
     } else {
-      $scope.bookmarklet = 'javascript:void function () {' + currentValue + '}();'
+      $scope.bookmarklet = 'javascript:(function(){' + currentValue + '})();'
     }
   };
 

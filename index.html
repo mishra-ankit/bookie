@@ -1,56 +1,59 @@
 <!DOCTYPE html>
-<html ng-app="plunker">
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bookie - Bookmarklet creator for Humans</title>
+    <!-- Load Monaco Editor styles -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/monaco-editor@latest/min/vs/editor/editor.main.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Bookie - Bookmarklet Creator</h1>
+      <div id="title-container">
+        <input
+          type="text"
+          id="title-input"
+          placeholder="Let's give it a name"
+        />
+      </div>
 
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Bookie - Bookmarklet creator for Humans</title>
-  <link data-require="bootstrap-css@3.3.6" data-semver="3.3.6" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.css" />
-  <script>
-    document.write('<base href="' + document.location + '" />');
-  </script>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.3/ace.js" type="text/javascript" charset="utf-8"></script>
-  <script data-require="angular.js@1.4.x" src="https://code.angularjs.org/1.4.9/angular.js" data-semver="1.4.9"></script>
-  <script src="https://rawgithub.com/angular-ui/ui-ace/bower/ui-ace.min.js"></script>
-  <script src="app.js"></script>
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
-</head>
+      <div id="editor-container">
+        
+      </div>
 
-<body ng-controller="MainCtrl">
-  <div class="container">
-    <h1>Bookmarklet Creator</h1>
-    <h5>Enter your JavaScript below to generate a standard or jQuery bookmarklet.</h5>
+      <div id="output-container">
+        Drag this link to your bookmarks bar:
+        <a
+          id="bookmarklet-button"
+          role="button"
+          href="javascript:void(0);"
+          >My Bookmarklet</a
+        >
+      </div>
+      <a
+        target="_blank"
+        class="github-fork-ribbon"
+        href="https://github.com/mishra-ankit/bookie"
+        data-ribbon="Open on GitHub"
+        title="Open on GitHub"
+        >Open on GitHub</a
+      >
+    </main>
+    <!-- Load Monaco Editor scripts -->
+    <script src="https://unpkg.com/monaco-editor@latest/min/vs/loader.js"></script>
 
-    <input type="text" class="form-control" placeholder="Let's give it a name" ng-model="name">
-
-    <div class="checkbox">
-      <label>
-        <input type="checkbox" ng-model="options.jQuery" ng-change="aceChanged()"> Include jQuery
-      </label>
-    </div>
-
-    <div id="editor" ui-ace="{
-      theme:'tomorrow',
-      mode: 'javascript',
-      onChange: aceChanged,
-      onLoad : aceLoaded
-    }">alert("Hi there....");</div>
-
-    <br />
-
-    <textarea rows="5" class="form-control" ng-bind="bookmarklet" placeholder="Generated code will be here..." id="output" wrap="hard" readonly></textarea>
-    <br /> Drag this link to your bookmarks bar: <a class="btn btn-success" ng-attr-href="{{ bookmarklet }}">{{name || 'My Bookmarklet'}}</a>
-
-  </div>
-  <div class="footer">
-    <div class="container">
-      <br>
-      <p>Made with <span class="glyphicon glyphicon-heart"></span> in India.</p>
-    </div>
-  </div>
-  <a class="github-fork-ribbon" href="https://github.com/mishra-ankit/bookie" data-ribbon="Open on GitHub" title="Open on GitHub">Open on GitHub</a>
-</body>
-
+    <script src="app.js"></script>
+  </body>
 </html>

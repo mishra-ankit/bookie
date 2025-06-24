@@ -36,7 +36,7 @@ require(["vs/editor/editor.main"], () => {
   editor.onDidChangeModelContent(() => {
     const code = editor.getValue();
     updateURL({ code });
-    updateBookmarkletCode(code);
+    updateBookmarkletCode(code); // This is now async but we don't need to await
   });
 
   // Initialize title input value from URL
@@ -53,9 +53,40 @@ require(["vs/editor/editor.main"], () => {
 });
 
 // Generate bookmarklet code and update button href
-function updateBookmarkletCode(code) {
-
-  const bookmarkletCode = `javascript:(function(){${code}})();`;
+async function updateBookmarkletCode(code) {
+  let cleanedCode = code;
+  
+  // Try to minify with Terser if available
+  if (typeof Terser !== 'undefined') {
+    try {
+      const result = await Terser.minify(code, {
+        compress: {
+          drop_console: false,    // Keep console.log for debugging
+          drop_debugger: false,   // Keep debugger statements
+          expression: true        // Important for bookmarklets - preserves completion values
+        },
+        mangle: false,            // Don't mangle names to keep them readable
+        format: {
+          comments: false,        // Remove all comments
+          beautify: false,        // Minify output
+          semicolons: true        // Always use semicolons for safety
+        }
+      });
+      
+      if (result.code && !result.error) {
+        cleanedCode = result.code;
+        console.log('✓ Minified with Terser');
+      } else {
+        console.warn('Terser returned error:', result.error);
+      }
+    } catch (error) {
+      console.warn('Terser failed:', error);
+    }
+  } else {
+    console.warn('Terser not available, using original code');
+  }
+  
+  const bookmarkletCode = `javascript:(function(){${cleanedCode}})();`;
   bookmarkletButton.setAttribute("href", bookmarkletCode);
 }
 
@@ -67,8 +98,23 @@ function encodeStateToBase64(state) {
 
 // Function to decode the base64 state
 function decodeBase64ToState(base64State) {
-  const jsonState = atob(base64State);
-  return JSON.parse(jsonState);
+  try {
+    // Convert URL-safe base64 back to regular base64
+    let regularBase64 = base64State
+      .replace(/-/g, '+')
+      .replace(/_/g, '/');
+    
+    // Add padding if needed
+    while (regularBase64.length % 4) {
+      regularBase64 += '=';
+    }
+    
+    const jsonState = atob(regularBase64);
+    return JSON.parse(jsonState);
+  } catch (error) {
+    console.error("Error decoding base64 state:", error);
+    return {};
+  }
 }
 
 // Update URL with base64-encoded state
@@ -77,24 +123,20 @@ function updateURL(state) {
     ...getStateFromURL(),
     ...state,
   });
-  const currentURL = window.location.href.split("?")[0];
+  const currentURL = window.location.href.split("#")[0];
   window.history.replaceState(
     {},
     "",
-    `${currentURL}?state=${base64State}`
+    `${currentURL}#${base64State}`
   );
 }
 
-// Decode URL to retrieve state
+// Decode URL hash to retrieve state
 function getStateFromURL() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const base64State = urlParams.get("state");
-  try {
-    if (base64State !== null) {
-      return decodeBase64ToState(base64State);
-    }
-  } catch (error) {
-    console.error("Error decoding URL state:", error);
+  const hash = window.location.hash.substring(1); // Remove the # character
+  
+  if (hash !== null && hash.trim() !== "") {
+    return decodeBase64ToState(hash);
   }
 
   return {};
@@ -105,25 +147,4 @@ function updateBookmarkletButtonText() {
   const titleInput = document.getElementById('title-input');
   const buttonTitle = titleInput.value;
   bookmarkletButton.innerText = buttonTitle;
-}
-
-// Minify code using the TopTal JavaScript Minifier API
-async function minifyCode(code) {
-  const response = await fetch(
-    "https://www.toptal.com/developers/javascript-minifier/api/raw",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: `input=${encodeURIComponent(code)}`,
-    }
-  );
-
-  if (response.ok) {
-    const minifiedCode = await response.text();
-    return minifiedCode;
-  } else {
-    throw new Error("Failed to minify code");
-  }
 }

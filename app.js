@@ -9,7 +9,7 @@ updateBookmarkletCode(initialState.code || "");
 
 // Load the Monaco Editor
 require.config({
-  paths: { vs: "https://unpkg.com/monaco-editor@latest/min/vs" },
+  paths: { vs: "https://unpkg.com/monaco-editor@0.52.2/min/vs" },
 });
 require(["vs/editor/editor.main"], () => {
   // Create the editor instance
